@@ -38,7 +38,7 @@ class PageHandler(webapp2.RequestHandler):
 class IndexHandler(PageHandler):
 
     def get(self):
-        self.render("index.html", None)
+        self.render("top/index.html", None)
         return
 
 

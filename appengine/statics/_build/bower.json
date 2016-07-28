@@ -1,0 +1,20 @@
+{
+  "name": "ishinomakihackathon2016",
+  "description": "",
+  "main": "main.js",
+  "authors": [
+    "adamrocker <adamrocker@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "bootstrap-sass-official#^3.3.6"
+  }
+}

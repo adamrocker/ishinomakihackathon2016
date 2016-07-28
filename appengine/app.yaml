@@ -10,8 +10,15 @@ libraries:
   version: "2.6"
 
 handlers:
+
 - url: /api.*
   script: api.app
+
+- url: /(.*)
+  static_files: statics/\1
+  upload: static/.*
+  secure: optional
+  expiration: "1s"
 
 - url: /.*
   script: main.app
