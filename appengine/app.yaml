@@ -1,0 +1,28 @@
+runtime: python27
+version: 1
+api_version: 1
+threadsafe: true
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
+- name: jinja2
+  version: "2.6"
+
+handlers:
+- url: /api.*
+  script: api.app
+
+- url: /.*
+  script: main.app
+
+skip_files:
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?\..*
+- .*\.less
+- .*\.pyc
+- sass
+- ^(.*/)?node_modules.*
+- ^(.*/)?.map$
+- ^(.*/)?_build.*
