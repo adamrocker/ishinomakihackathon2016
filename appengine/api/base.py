@@ -27,6 +27,9 @@ class ApiHandler(webapp2.RequestHandler):
     def get_param_as_json(self):
         return json.loads(self.request.body)
 
+    def get_param(self, key, default=None):
+        return self.request.params.get(key, default)
+
     def _write_json(self, value, status_code=200):
         value.update({"code": status_code})
         json_value = json.dumps(value)
