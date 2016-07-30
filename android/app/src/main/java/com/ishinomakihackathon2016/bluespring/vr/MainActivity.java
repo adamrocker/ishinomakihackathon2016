@@ -50,6 +50,9 @@ public class MainActivity extends Activity implements
     // ===== MAIN Layout
     private LinearLayout mMainLayout;
 
+    // ===== Target user Layout
+    private LinearLayout mTargetLayout;
+
     // ===== VR VIDEO
     private LinearLayout mVideoLayout;
     private VrVideoView videoWidgetView;
@@ -61,6 +64,7 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mMainLayout = (LinearLayout) findViewById(R.id.main_layout);
+        mTargetLayout = (LinearLayout)findViewById(R.id.target_user);
         mHandler = new Handler();
 
         mP2p = new SkyWay(getApplicationContext(), new SkyWayDataEventListener() {
@@ -219,7 +223,11 @@ public class MainActivity extends Activity implements
 
                         @Override
                         public void OnConnection(Object o) {
+                            /*
+                               招待した友達が部屋に入ってきた
+                             */
 
+                            mTargetLayout.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -248,6 +256,13 @@ public class MainActivity extends Activity implements
         mP2p.createPeer(null, new SkyWayPeerEventListener() {
             @Override
             public void OnOpen(String peerId) {
+                Log.d(TAG,"passed onOpen()");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTargetLayout.setVisibility(View.VISIBLE);
+                    }
+                });
                 mMyPeerId = peerId;
                 mP2p.createDataConnection(mDstPeerId);
             }
