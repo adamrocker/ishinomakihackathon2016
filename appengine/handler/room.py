@@ -14,7 +14,7 @@ class IndexHandler(BaseHandler):
 class RoomHandler(BaseHandler):
     def get(self):
         value = {
-            "url": self.get_url()
+            "url": self.get_app_url()
         }
         self.render("room/index.html", value)
         return
