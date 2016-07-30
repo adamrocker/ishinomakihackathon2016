@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.ishinomakihackathon2016.bluespring.skyway.SkyWay;
 import com.ishinomakihackathon2016.bluespring.skyway.SkyWayPeerEventListener;
@@ -20,13 +20,14 @@ import org.json.JSONObject;
 
 import io.skyway.Peer.MediaConnection;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends Activity implements
+        View.OnClickListener,
+        Toolbar.OnMenuItemClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private Handler mHandler;
 
     private Toolbar mToolbar;
-    private ImageButton mShareBtn;
     private Button mJoinBtn;
 
     private SkyWay mP2p;
@@ -45,9 +46,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(getColor(R.color.toolbar_title));
         mToolbar.setTitle(getString(R.string.app_name));
-
-        mShareBtn = (ImageButton)findViewById(R.id.share_button);
-        mShareBtn.setOnClickListener(this);
+        mToolbar.inflateMenu(R.menu.menu_main);
+        mToolbar.setOnMenuItemClickListener(this);
 
         mJoinBtn = (Button)findViewById(R.id.join_button);
         mJoinBtn.setOnClickListener(this);
@@ -70,20 +70,31 @@ public class MainActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         int id = v.getId();
 
-        if (id == R.id.share_button) {
-            // RoomのURLをシェアする
-            if (mRoomUrl == null) {
-                Log.e(TAG, "No share url");
-            } else {
-                // mRoomUrlをシェアする
-            }
-        } else if( id == R.id.join_button) {
+        if( id == R.id.join_button) {
             if (0 <= mRoomId) {
                 // Roomに入る
             } else {
 
             }
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_search) {
+            // RoomのURLをシェアする
+            if (mRoomUrl == null) {
+                Log.e(TAG, "No share url");
+            } else {
+                // mRoomUrlをシェアする
+                share();
+            }
+            return true;
+        }
+
+        return true;
     }
 
     private void makeRoom() {
@@ -157,5 +168,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 }
             }
         });
+    }
+
+    private void share(){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, mRoomUrl);
+        startActivity(intent);
     }
 }
