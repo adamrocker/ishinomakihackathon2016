@@ -1,10 +1,15 @@
 package com.ishinomakihackathon2016.bluespring.skyway;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
+import org.webrtc.AudioTrack;
+
+import io.skyway.Peer.Browser.Canvas;
 import io.skyway.Peer.Browser.MediaConstraints;
 import io.skyway.Peer.Browser.MediaStream;
+import io.skyway.Peer.Browser.Navigator;
 import io.skyway.Peer.CallOption;
 import io.skyway.Peer.ConnectOption;
 import io.skyway.Peer.DataConnection;
@@ -22,13 +27,16 @@ public class SkyWay {
     private MediaStream _mMediaLocal;
     private MediaStream _mMediaRemote;
     private DataConnection mDataConnection;
+    private Handler mHandler;
+    private Canvas mCanvas;
     private String mPeerId;
     private String mTargetPeerId;
 
     private SkyWayDataEventListener mDataEventListener;
 
-    public SkyWay(Context context, SkyWayDataEventListener listener) {
+    public SkyWay(Context context, Handler handler, SkyWayDataEventListener listener) {
         this.mContext = context;
+        this.mHandler = handler;
         this.mDataEventListener = listener;
     }
 
@@ -64,9 +72,13 @@ public class SkyWay {
             @Override
             public void onCallback(Object o) {
                 Log.d(TAG, "Peer/CALL");
-                _mMedia = (MediaConnection) o;
-                setMediaCallbacks();
-                receiveCall();
+                if (o instanceof MediaConnection) {
+                    _mMedia = (MediaConnection) o;
+                    startLocalStream();
+                    setMediaCallbacks();
+                    _mMedia.answer(_mMediaLocal);
+                }
+
                 if(listener != null) listener.OnCall(_mMedia);
             }
         });
@@ -137,7 +149,18 @@ public class SkyWay {
         media.on(MediaConnection.MediaEventEnum.STREAM, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "MediaStream@MediaConnection: " + object);
 				_mMediaRemote = (MediaStream) object;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCanvas = new Canvas(mContext);
+                        mCanvas.addSrc(_mMediaRemote, 0);
+                    }
+                });
+
+                //startLocalStream();
+                //media.answer(_mMediaLocal);
                 // import io.skyway.Peer.Browser.Canvas;
 				// Canvas canvas = (Canvas) findViewById(R.id.svPrimary);
 				// canvas.addSrc(_mMediaRemote, 0);
@@ -147,6 +170,7 @@ public class SkyWay {
 		media.on(MediaConnection.MediaEventEnum.CLOSE, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "MediaClose@MediaConnection: " + object);
 				if (_mMediaRemote == null) {
 					return;
 				}
@@ -248,41 +272,34 @@ public class SkyWay {
         sendMessage("cmd:pause:" + seektime);
     }
 
+    public void sendCommandCreateMediaPeer(String myPeerId) {
+        sendMessage("cmd:media:" + myPeerId);
+    }
+
+    public void sendCommandDummy(String msg) {
+        sendMessage("cmd:dummy:" + msg);
+    }
+
     private void startLocalStream() throws IllegalStateException {
         if (!this.hasConnection()) {
             throw new IllegalStateException("No peer to start any local stream");
         }
+        Navigator.initialize(mPeer);
         MediaConstraints constraints = new MediaConstraints();
-        _mMediaLocal = this.mPeer.getLocalMediaStream(constraints);
+        constraints.videoFlag = true;
+        constraints.audioFlag = true;
+        _mMediaLocal = Navigator.getUserMedia(constraints);
     }
 
-    private void receiveCall() {
-        synchronized (this) {
-            if (!hasConnection()) {
-                return;
-            }
-
-            this.startLocalStream();
-            this._mMedia.answer(_mMediaLocal);
-        }
-    }
-
-    public void call(String peerId) throws IllegalStateException {
+    public void createMediaConnection(String dstPeerId) throws IllegalStateException {
         synchronized (this) {
             if (!this.hasConnection()) {
-                throw new IllegalStateException("Already had a connection");
-            }
-
-            if (this._mMedia != null) {
-                if (this._mMedia.isOpen) {
-                    this._mMedia.close();
-                    this._mMedia = null;
-                }
+                throw new IllegalStateException("No connection");
             }
 
             this.startLocalStream();
             CallOption option = new CallOption();
-            this._mMedia = this.mPeer.call(peerId, _mMediaLocal, option);
+            this._mMedia = this.mPeer.call(dstPeerId, _mMediaLocal, option);
             if (this._mMedia != null) {
                 this.setMediaCallbacks();
             }
