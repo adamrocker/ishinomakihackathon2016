@@ -3,10 +3,6 @@ package com.ishinomakihackathon2016.bluespring.vr;
 import com.google.vr.sdk.widgets.video.VrVideoEventListener;
 import com.google.vr.sdk.widgets.video.VrVideoView;
 import com.google.vr.sdk.widgets.video.VrVideoView.Options;
-import com.ishinomakihackathon2016.bluespring.skyway.SkyWay;
-import com.ishinomakihackathon2016.bluespring.skyway.SkyWayPeerEventListener;
-import com.ishinomakihackathon2016.bluespring.util.Api;
-import com.ishinomakihackathon2016.bluespring.util.ApiCallback;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,9 +15,6 @@ import android.util.Pair;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import io.skyway.Peer.MediaConnection;
 
 /**
  * Created by adam on 16/07/30.
@@ -86,10 +79,6 @@ public class FullVrVideoActivity extends Activity {
 
     private Handler mHandler;
 
-    private SkyWay mP2p;
-    private String mPeerId;
-    private String mRoomUrl;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +87,6 @@ public class FullVrVideoActivity extends Activity {
         mHandler = new Handler();
 
         Intent intent = getIntent();
-        mP2p = new SkyWay(getApplicationContext());
-        setupP2P(intent);
 
         // Bind input and output objects for the view.
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
@@ -121,73 +108,6 @@ public class FullVrVideoActivity extends Activity {
         setIntent(intent);
         // Load the new image.
         handleIntent();
-    }
-
-    private void setupP2P(Intent intent) {
-        // ToDo 自分で開いたのか、URLを踏んで開いたのかを判定する
-        // Uri uri = intent.getData();
-        // List<String> segments = uri.getPathSegments();
-        Uri uri = intent.getData();
-        Log.d(TAG, "setupP2P.uri=" + uri);
-        if (uri == null) {
-            // Launch app
-            makeSession();  // PeerIdを取得する(Roomを作る側/Sender)
-        } else {
-            String path = uri.getPath();
-            Log.d(TAG, "  - path=" + path);
-            makeCall(); // PeerIdを持って接続しに行く(Roomにアクセスする側/Receiver)
-        }
-    }
-    private void makeSession() {
-        mP2p.createPeer(new SkyWayPeerEventListener() {
-            @Override
-            public void OnOpen(String peerId) {
-                mPeerId = peerId;
-                createRoom();
-            }
-
-            @Override
-            public void OnCall(MediaConnection o) {
-            }
-
-            @Override
-            public void OnClose(Object o) {
-            }
-
-            @Override
-            public void OnDisconnected(Object o) {
-            }
-
-            @Override
-            public void OnError(Object o) {
-            }
-        });
-    }
-
-    private void makeCall() {
-
-    }
-
-    private void createRoom() {
-        Api api = Api.getInstance(mHandler);
-        api.register(mPeerId, new ApiCallback() {
-            @Override
-            public void onFailure() {
-                Log.e(TAG, "FAILURE/API Register");
-            }
-
-            @Override
-            public void onResponse(String result) {
-                Log.d(TAG, "Response/API Register: " + result);
-                try {
-                    JSONObject json = new JSONObject(result);
-                    mRoomUrl = json.getString("room_page");
-                    Log.d(TAG, "  - room_page=" + mRoomUrl);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     /**

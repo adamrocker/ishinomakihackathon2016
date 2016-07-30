@@ -321,7 +321,7 @@
         android:layout_margin="10dp"
         android:background="#f74d80"
         android:textColor="#ffffff"
-        android:id="@+id/login_button"
+        android:id="@+id/join_button"
         android:text="@string/login_title"
         android:gravity="center"
         android:textSize="20dp"

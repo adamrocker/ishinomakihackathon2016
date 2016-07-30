@@ -76,7 +76,7 @@ public class Api {
         post("/peer/register", body, callback);
     }
 
-    public void getPeer(int roomId, ApiCallback callback) {
+    public void getPeer(long roomId, ApiCallback callback) {
         // リクエストボディを作る
         RequestBody body = new FormEncodingBuilder().build();
 
