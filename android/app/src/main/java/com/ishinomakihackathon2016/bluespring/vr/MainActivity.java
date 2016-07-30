@@ -32,6 +32,7 @@ public class MainActivity extends Activity implements
 
     private SkyWay mP2p;
     private String mPeerId;
+    private String mMyPeerId; // 自分のID
     private long mRoomId = -1;
     private String mRoomUrl;
 
@@ -59,11 +60,17 @@ public class MainActivity extends Activity implements
             String path = uri.getPath();
             String roomId = path.split("/")[2];
             mRoomId = Long.parseLong(roomId);
+            mPeerId = String.valueOf(mRoomId);
             Log.d(TAG, "  - roomId=" + mRoomId);
-            connectPeer();
+            //connectPeer();
+            connectDestPeer();
         } else {
-            makeRoom();
+            createRoom();
         }
+    }
+
+    private void test() {
+        makeRoom();
     }
 
     @Override
@@ -91,18 +98,17 @@ public class MainActivity extends Activity implements
                 // mRoomUrlをシェアする
                 share();
             }
-            return true;
         }
-
         return true;
     }
 
     private void makeRoom() {
-        mP2p.createPeer(new SkyWayPeerEventListener() {
+        mP2p.createPeer("room_id",  new SkyWayPeerEventListener() {
             @Override
             public void OnOpen(String peerId) {
                 mPeerId = peerId;
-                createRoom();
+                //createRoom();
+                mP2p.startDataConnection();
             }
 
             @Override
@@ -125,7 +131,7 @@ public class MainActivity extends Activity implements
 
     private void createRoom() {
         Api api = Api.getInstance(mHandler);
-        api.register(mPeerId, new ApiCallback() {
+        api.register("DUMMY", new ApiCallback() {
             @Override
             public void onFailure() {
                 Log.e(TAG, "FAILURE/API Register");
@@ -137,10 +143,68 @@ public class MainActivity extends Activity implements
                 try {
                     JSONObject json = new JSONObject(result);
                     mRoomUrl = json.getString("room_page");
+                    mRoomId = json.getLong("room_id");
+                    mMyPeerId = String.valueOf(mRoomId);
                     Log.d(TAG, "  - room_page=" + mRoomUrl);
+                    Log.d(TAG, "  - my_peer_id=" + mMyPeerId);
+                    mP2p.createPeer(mMyPeerId, new SkyWayPeerEventListener() {
+                        @Override
+                        public void OnOpen(String peerId) {
+
+                        }
+
+                        @Override
+                        public void OnCall(MediaConnection o) {
+
+                        }
+
+                        @Override
+                        public void OnClose(Object o) {
+
+                        }
+
+                        @Override
+                        public void OnDisconnected(Object o) {
+
+                        }
+
+                        @Override
+                        public void OnError(Object o) {
+
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    private void connectDestPeer() {
+        mP2p.createPeer(null, new SkyWayPeerEventListener() {
+            @Override
+            public void OnOpen(String peerId) {
+                Log.i(TAG, "OPEN@connectDestPeer");
+            }
+
+            @Override
+            public void OnCall(MediaConnection o) {
+
+            }
+
+            @Override
+            public void OnClose(Object o) {
+
+            }
+
+            @Override
+            public void OnDisconnected(Object o) {
+
+            }
+
+            @Override
+            public void OnError(Object o) {
+
             }
         });
     }

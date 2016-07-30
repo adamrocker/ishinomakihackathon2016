@@ -28,11 +28,17 @@ public class SkyWay {
         this.mContext = context;
     }
 
-    public void createPeer(final SkyWayPeerEventListener listener) {
+    public void createPeer(String myPeerId, final SkyWayPeerEventListener listener) {
         PeerOption options = new PeerOption();
         options.key = "6eac44de-4e2f-417a-9834-e3a892446a21";
         options.domain = "localhost.com";
-        final Peer peer = new Peer(this.mContext, options);
+        Peer peer;
+        if (myPeerId == null) {
+            peer = new Peer(this.mContext, options);
+        } else {
+            peer = new Peer(this.mContext, myPeerId, options);
+        }
+
         this.mPeer = peer;
 
         peer.on(Peer.PeerEventEnum.OPEN, new OnCallback() {
@@ -56,6 +62,14 @@ public class SkyWay {
                 setMediaCallbacks();
                 receiveCall();
                 if(listener != null) listener.OnCall(_mMedia);
+            }
+        });
+
+        peer.on(Peer.PeerEventEnum.CONNECTION, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/CONNECTION");
+                Log.i(TAG, "  - " + o);
             }
         });
 
@@ -149,12 +163,16 @@ public class SkyWay {
         data.on(DataConnection.DataEventEnum.OPEN, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "Peer-Dataconnection/OPEN");
+                Log.i(TAG, "  - " + object);
 			}
 		});
 
 		data.on(DataConnection.DataEventEnum.DATA, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "Peer-Dataconnection/DATA");
+                Log.i(TAG, "  - " + object);
 				String value = null;
 
 				if (object instanceof String) {
@@ -166,6 +184,8 @@ public class SkyWay {
 		data.on(DataConnection.DataEventEnum.CLOSE, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "Peer-Dataconnection/CLOSE");
+                Log.i(TAG, "  - " + object);
                 // ToDo disconnect process
 			}
 		});
@@ -173,6 +193,8 @@ public class SkyWay {
 		data.on(DataConnection.DataEventEnum.ERROR, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "Peer-Dataconnection/ERROR");
+                Log.i(TAG, "  - " + object);
 				// TODO: DataEvent/ERROR
 				PeerError error = (PeerError) object;
 				Log.d(TAG, "DataError: " + error);
@@ -181,6 +203,11 @@ public class SkyWay {
 		});
     }
 
+    public void sendMessage(String msg) {
+        Log.d(TAG, "sendMessage: " + msg);
+        boolean result = mDataConnection.send(msg);
+        Log.d(TAG, "  - result: " + result);
+    }
 
     private void startLocalStream() throws IllegalStateException {
         if (!this.hasConnection()) {
