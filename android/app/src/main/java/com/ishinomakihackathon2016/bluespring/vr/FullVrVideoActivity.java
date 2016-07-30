@@ -3,6 +3,8 @@ package com.ishinomakihackathon2016.bluespring.vr;
 import com.google.vr.sdk.widgets.video.VrVideoEventListener;
 import com.google.vr.sdk.widgets.video.VrVideoView;
 import com.google.vr.sdk.widgets.video.VrVideoView.Options;
+import com.ishinomakihackathon2016.bluespring.skyway.SkyWay;
+import com.ishinomakihackathon2016.bluespring.skyway.SkyWayPeerEventListener;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +16,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.SeekBar;
 import android.widget.Toast;
+
+import io.skyway.Peer.MediaConnection;
 
 
 /**
@@ -78,15 +82,19 @@ public class FullVrVideoActivity extends Activity {
     private boolean isPaused = false;
 
     private Handler mHandler;
+    private SkyWay mSw;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vr_layout);
 
+        Log.i(TAG, "================= FullVrVideoActivity.onCreate() =================");
+
         mHandler = new Handler();
 
         Intent intent = getIntent();
+        // setupPeer(intent);
 
         // Bind input and output objects for the view.
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
@@ -95,6 +103,44 @@ public class FullVrVideoActivity extends Activity {
 
         // Initial launch of the app or an Activity recreation due to rotation.
         handleIntent();
+    }
+
+    private void setupPeer(Intent intent) {
+        String myPeerId = intent.getStringExtra("my_peer_id");
+        final String dstPeerid = intent.getStringExtra("dst_peer_id");
+        mSw = new SkyWay(getApplicationContext(), null);
+        mSw.createPeer(myPeerId, new SkyWayPeerEventListener() {
+            @Override
+            public void OnOpen(String peerId) {
+                mSw.createDataConnection(dstPeerid);
+            }
+
+            @Override
+            public void OnCall(MediaConnection o) {
+
+            }
+
+            @Override
+            public void OnConnection(Object o) {
+
+            }
+
+            @Override
+            public void OnClose(Object o) {
+
+            }
+
+            @Override
+            public void OnDisconnected(Object o) {
+
+            }
+
+            @Override
+            public void OnError(Object o) {
+
+            }
+        });
+
     }
 
     /**
@@ -178,6 +224,7 @@ public class FullVrVideoActivity extends Activity {
         } else {
             this.pauseVideo();
         }
+        mSw.sendMessage("HELLO!!");
     }
 
     private void playVideo() {
