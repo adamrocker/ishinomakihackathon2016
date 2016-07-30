@@ -9,15 +9,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 
 /**
  * Created by adam on 16/07/30.
@@ -80,19 +77,24 @@ public class FullVrVideoActivity extends Activity {
      */
     private boolean isPaused = false;
 
+    private Handler mHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vr_layout);
 
+        mHandler = new Handler();
+
+        Intent intent = getIntent();
+
         // Bind input and output objects for the view.
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
         videoWidgetView.setEventListener(new ActivityEventListener());
-
         loadVideoStatus = LOAD_VIDEO_STATUS_UNKNOWN;
 
         // Initial launch of the app or an Activity recreation due to rotation.
-        handleIntent(getIntent());
+        handleIntent();
     }
 
     /**
@@ -105,36 +107,15 @@ public class FullVrVideoActivity extends Activity {
         // future invocations.
         setIntent(intent);
         // Load the new image.
-        handleIntent(intent);
+        handleIntent();
     }
 
     /**
      * Load custom videos based on the Intent or load the default video. See the Javadoc for this
      * class for information on generating a custom intent via adb.
      */
-    private void handleIntent(Intent intent) {
-        // Determine if the Intent contains a file to load.
-        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            Log.i(TAG, "ACTION_VIEW Intent received");
-
-            fileUri = intent.getData();
-            if (fileUri == null) {
-                Log.w(TAG, "No data uri specified. Use \"-d /path/filename\".");
-            } else {
-                Log.i(TAG, "Using file " + fileUri.toString());
-            }
-
-            videoOptions.inputFormat = intent.getIntExtra("inputFormat", Options.FORMAT_DEFAULT);
-            videoOptions.inputType = intent.getIntExtra("inputType", Options.TYPE_MONO);
-        } else {
-            Log.i(TAG, "Intent is not ACTION_VIEW. Using the default video.");
-            fileUri = null;
-        }
-
-        // Load the bitmap in a background thread to avoid blocking the UI thread. This operation can
-        // take 100s of milliseconds.
+    private void handleIntent() {
         if (backgroundVideoLoaderTask != null) {
-            // Cancel any task from a previous intent sent to this activity.
             backgroundVideoLoaderTask.cancel(true);
         }
         backgroundVideoLoaderTask = new VideoLoaderTask();
@@ -163,6 +144,11 @@ public class FullVrVideoActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         // Prevent the view from rendering continuously when in the background.
@@ -188,11 +174,36 @@ public class FullVrVideoActivity extends Activity {
 
     private void togglePause() {
         if (isPaused) {
-            videoWidgetView.playVideo();
+            this.playVideo();
         } else {
-            videoWidgetView.pauseVideo();
+            this.pauseVideo();
         }
+    }
+
+    private void playVideo() {
+        long seek = getPosition();
+        playVideo(seek);
+    }
+
+    private void playVideo(long seektime) {
+        // seektime: position in milliseconds
+        if (!isPaused) return;
+
+        videoWidgetView.seekTo(seektime);
+        videoWidgetView.playVideo();
         isPaused = !isPaused;
+    }
+
+    private void pauseVideo() {
+        if (isPaused) return;
+
+        videoWidgetView.pauseVideo();
+        isPaused = !isPaused;
+    }
+
+    private long getPosition() {
+        // the current position in milliseconds.
+        return videoWidgetView.getCurrentPosition();
     }
 
     /**
@@ -267,36 +278,57 @@ public class FullVrVideoActivity extends Activity {
      * Helper class to manage threading.
      */
     class VideoLoaderTask extends AsyncTask<Pair<Uri, Options>, Void, Boolean> {
+
         @Override
         protected Boolean doInBackground(Pair<Uri, Options>... fileInformation) {
-            try {
-                if (fileInformation == null || fileInformation.length < 1
-                        || fileInformation[0] == null || fileInformation[0].first == null) {
-                    // No intent was specified, so we default to playing the local stereo-over-under video.
-                    Options options = new Options();
-                    options.inputType = Options.TYPE_STEREO_OVER_UNDER;
-                    Log.i(TAG, "loadVideoFromAssert(congo.mp4)");
-                    //videoWidgetView.loadVideoFromAsset("congo.mp4", options);
-                    videoWidgetView.loadVideoFromAsset("penguins.mp4", options);
-                } else {
-                    Log.i(TAG, "loadVideoFromAssert(" + fileInformation[0].first + ")");
-                    videoWidgetView.loadVideo(fileInformation[0].first, fileInformation[0].second);
-                }
-            } catch (IOException e) {
-                // An error here is normally due to being unable to locate the file.
-                loadVideoStatus = LOAD_VIDEO_STATUS_ERROR;
-                // Since this is a background thread, we need to switch to the main thread to show a toast.
-                videoWidgetView.post(new Runnable() {
+            if (fileInformation == null || fileInformation.length < 1
+                    || fileInformation[0] == null || fileInformation[0].first == null) {
+                Log.i(TAG, "loadVideoFromAssert(penguins.mp4)");
+                mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast
-                                .makeText(FullVrVideoActivity.this, "Error opening file. ", Toast.LENGTH_LONG)
-                                .show();
+                        // No intent was specified, so we default to playing the local stereo-over-under video.
+                        Options options = new Options();
+                        options.inputType = Options.TYPE_STEREO_OVER_UNDER;
+
+                        try {
+                            //videoWidgetView.loadVideoFromAsset("congo.mp4", options);
+                            videoWidgetView.loadVideoFromAsset("penguins.mp4", options);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Could not open video: " + e);
+                            e.printStackTrace();
+                            videoWidgetView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(FullVrVideoActivity.this, "Error opening file. ", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
                     }
                 });
-                Log.e(TAG, "Could not open video: " + e);
-            }
+            } else {
+                final Pair<Uri, Options> fileInfo = fileInformation[0];
+                Log.i(TAG, "loadVideoFromAssert(" + fileInformation[0].first + ")");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            videoWidgetView.loadVideo(fileInfo.first, fileInfo.second);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Could not open video: " + e);
+                            e.printStackTrace();
+                            loadVideoStatus = LOAD_VIDEO_STATUS_ERROR;
+                            videoWidgetView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(FullVrVideoActivity.this, "Error opening file. ", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                });
 
+            }
             return true;
         }
     }

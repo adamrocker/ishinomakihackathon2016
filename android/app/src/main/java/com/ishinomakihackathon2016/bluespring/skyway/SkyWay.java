@@ -1,7 +1,6 @@
 package com.ishinomakihackathon2016.bluespring.skyway;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import io.skyway.Peer.Browser.MediaConstraints;
@@ -17,25 +16,73 @@ import io.skyway.Peer.PeerOption;
 
 public class SkyWay {
     public static final String TAG = SkyWay.class.getSimpleName();
-    private Context _context;
-    private Peer _peer;
-    private MediaConnection _media;
-    private MediaStream _msLocal;
-    private MediaStream _msRemote;
-    private DataConnection _data;
-    private String _id;
+    private Context mContext;
+    private Peer mPeer;
+    private MediaConnection _mMedia;
+    private MediaStream _mMediaLocal;
+    private MediaStream _mMediaRemote;
+    private DataConnection mDataConnection;
+    private String mPeerId;
 
-
-    private SkyWay(Context context) {
-        this._context = context;
+    public SkyWay(Context context) {
+        this.mContext = context;
     }
 
-    private void createPeer() {
+    public void createPeer(final SkyWayPeerEventListener listener) {
         PeerOption options = new PeerOption();
         options.key = "6eac44de-4e2f-417a-9834-e3a892446a21";
         options.domain = "localhost.com";
-        this._peer = new Peer(this._context, options);
-        this.setPeerCallbacks();
+        final Peer peer = new Peer(this.mContext, options);
+        this.mPeer = peer;
+
+        peer.on(Peer.PeerEventEnum.OPEN, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/OPEN");
+				if (o instanceof String) {
+					mPeerId = (String) o;
+					Log.d(TAG, "ID:" + mPeerId);
+                    if(listener != null) listener.OnOpen(mPeerId);
+				}
+
+            }
+        });
+
+        peer.on(Peer.PeerEventEnum.CALL, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/CALL");
+                _mMedia = (MediaConnection) o;
+                setMediaCallbacks();
+                receiveCall();
+                if(listener != null) listener.OnCall(_mMedia);
+            }
+        });
+
+        peer.on(Peer.PeerEventEnum.CLOSE, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/CLOSE");
+                disconnect();
+                if(listener != null) listener.OnClose(o);
+            }
+        });
+
+        peer.on(Peer.PeerEventEnum.DISCONNECTED, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/DISCONNECTED");
+                if(listener != null) listener.OnDisconnected(o);
+            }
+        });
+
+        peer.on(Peer.PeerEventEnum.ERROR, new OnCallback() {
+            @Override
+            public void onCallback(Object o) {
+                Log.d(TAG, "Peer/ERROR");
+                if(listener != null) listener.OnError(o);
+            }
+        });
     }
 
     private void createDataConnection() {
@@ -46,86 +93,45 @@ public class SkyWay {
 		option.serialization = DataConnection.SerializationEnum.BINARY;
 
 		// connect
-		_data = _peer.connect(_id, option);
+		mDataConnection = mPeer.connect(mPeerId, option);
 
         setDataConnectionCallbacks();
     }
 
     private boolean hasConnection() {
         synchronized (this) {
-            return this._peer != null;
+            return this.mPeer != null;
         }
     }
 
     private void setPeerCallbacks() {
-        final Peer peer = this._peer;
 
-        peer.on(Peer.PeerEventEnum.OPEN, new OnCallback() {
-            @Override
-            public void onCallback(Object o) {
-                Log.d(TAG, "[On/Open]");
-				if (o instanceof String) {
-					_id = (String) o;
-					Log.d(TAG, "ID:" + _id);
-				}
-            }
-        });
-
-        peer.on(Peer.PeerEventEnum.CALL, new OnCallback() {
-            @Override
-            public void onCallback(Object o) {
-                _media = (MediaConnection) o;
-                setMediaCallbacks();
-                receiveCall();
-            }
-        });
-
-        peer.on(Peer.PeerEventEnum.CLOSE, new OnCallback() {
-            @Override
-            public void onCallback(Object o) {
-                disconnect();
-            }
-        });
-
-        peer.on(Peer.PeerEventEnum.DISCONNECTED, new OnCallback() {
-            @Override
-            public void onCallback(Object o) {
-
-            }
-        });
-
-        peer.on(Peer.PeerEventEnum.ERROR, new OnCallback() {
-            @Override
-            public void onCallback(Object o) {
-
-            }
-        });
     }
 
     private void setMediaCallbacks() {
-        final MediaConnection media = this._media;
+        final MediaConnection media = this._mMedia;
         media.on(MediaConnection.MediaEventEnum.STREAM, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
-				_msRemote = (MediaStream) object;
+				_mMediaRemote = (MediaStream) object;
                 // import io.skyway.Peer.Browser.Canvas;
 				// Canvas canvas = (Canvas) findViewById(R.id.svPrimary);
-				// canvas.addSrc(_msRemote, 0);
+				// canvas.addSrc(_mMediaRemote, 0);
 			}
 		});
 
 		media.on(MediaConnection.MediaEventEnum.CLOSE, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
-				if (_msRemote == null) {
+				if (_mMediaRemote == null) {
 					return;
 				}
 
                 // import io.skyway.Peer.Browser.Canvas;
 				// Canvas canvas = (Canvas) findViewById(R.id.svPrimary);
-				// canvas.removeSrc(_msRemote, 0);
-                _msRemote.close();
-				_msRemote = null;
+				// canvas.removeSrc(_mMediaRemote, 0);
+                _mMediaRemote.close();
+				_mMediaRemote = null;
 			}
 		});
 
@@ -139,7 +145,7 @@ public class SkyWay {
     }
 
     private void setDataConnectionCallbacks() {
-        final DataConnection data = this._data;
+        final DataConnection data = this.mDataConnection;
         data.on(DataConnection.DataEventEnum.OPEN, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
@@ -181,11 +187,11 @@ public class SkyWay {
             throw new IllegalStateException("No peer to start any local stream");
         }
         MediaConstraints constraints = new MediaConstraints();
-        _msLocal = this._peer.getLocalMediaStream(constraints);
+        _mMediaLocal = this.mPeer.getLocalMediaStream(constraints);
 
         // import io.skyway.Peer.Browser.Canvas;
         // Canvas canvas = (Canvas) findViewById(R.id.svSecondary);
-        // canvas.addSrc(_msLocal, 0);
+        // canvas.addSrc(_mMediaLocal, 0);
     }
 
     private void receiveCall() {
@@ -195,7 +201,7 @@ public class SkyWay {
             }
 
             this.startLocalStream();
-            this._media.answer(_msLocal);
+            this._mMedia.answer(_mMediaLocal);
         }
     }
 
@@ -205,22 +211,17 @@ public class SkyWay {
                 throw new IllegalStateException("Already had a connection");
             }
 
-            if (this._peer == null) {
-                this.createPeer();
-            }
-
-
-            if (this._media != null) {
-                if (this._media.isOpen) {
-                    this._media.close();
-                    this._media = null;
+            if (this._mMedia != null) {
+                if (this._mMedia.isOpen) {
+                    this._mMedia.close();
+                    this._mMedia = null;
                 }
             }
 
             this.startLocalStream();
             CallOption option = new CallOption();
-            this._media = this._peer.call(peerId, _msLocal, option);
-            if (this._media != null) {
+            this._mMedia = this.mPeer.call(peerId, _mMediaLocal, option);
+            if (this._mMedia != null) {
                 this.setMediaCallbacks();
             }
         }
@@ -228,20 +229,20 @@ public class SkyWay {
 
     public void closeCall() {
         synchronized (this) {
-            final MediaConnection media = this._media;
+            final MediaConnection media = this._mMedia;
             if (media != null && media.isOpen) {
                 media.close();
             }
-            this._media = null;
+            this._mMedia = null;
 
-            if (this._msRemote != null) {
-                this._msRemote.close();
-                this._msRemote = null;
+            if (this._mMediaRemote != null) {
+                this._mMediaRemote.close();
+                this._mMediaRemote = null;
             }
 
-            if (this._msLocal != null) {
-                this._msLocal.close();
-                this._msLocal = null;
+            if (this._mMediaLocal != null) {
+                this._mMediaLocal.close();
+                this._mMediaLocal = null;
             }
         }
     }
@@ -251,7 +252,7 @@ public class SkyWay {
             throw new IllegalStateException("No peer to start data connection");
         }
 
-        if (this._data == null) {
+        if (this.mDataConnection == null) {
             createDataConnection();
         }
     }
@@ -265,15 +266,15 @@ public class SkyWay {
         this.closeData();
 
         synchronized (this) {
-            if (this._peer != null) {
-                if (!this._peer.isDisconnected) {
-                    this._peer.disconnect();
+            if (this.mPeer != null) {
+                if (!this.mPeer.isDisconnected) {
+                    this.mPeer.disconnect();
                 }
 
-                if (!this._peer.isDestroyed) {
-                    this._peer.destroy();
+                if (!this.mPeer.isDestroyed) {
+                    this.mPeer.destroy();
                 }
-                this._peer = null;
+                this.mPeer = null;
             }
         }
     }
