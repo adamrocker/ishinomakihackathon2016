@@ -1,323 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fefee8"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.ishinomakihackathon2016.bluespring.vr.MainActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?android:actionBarSize"
-        android:background="@color/toolbar_background"/>
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:padding="8dp"
-        android:background="@color/user_thumb_background"
-        android:layout_weight="1.5"
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent"
+        android:background="#fefee8"
+        android:orientation="vertical"
+        tools:context="com.ishinomakihackathon2016.bluespring.vr.MainActivity">
 
-        <ScrollView
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/toolbar_background"
+            android:minHeight="?android:actionBarSize" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
-
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <com.ishinomakihackathon2016.bluespring.vr.RoundedImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="top|center_horizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-
-                    <Space
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
-
-                    <Space
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </ScrollView>
-
-    </LinearLayout>
-
-    <TextView
-        android:background="@color/border"
-        android:layout_width="match_parent"
-        android:layout_height="3dp" />
-
-    <LinearLayout
-        android:background="@color/movie_thumb_background"
-        android:layout_weight="1.5"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-        <ScrollView
-            android:paddingTop="8dp"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp"
-            android:id="@+id/scrollView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:background="@color/user_thumb_background"
+            android:padding="8dp">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_margin="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
+                            <com.ishinomakihackathon2016.bluespring.vr.RoundedImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="top|center_horizontal"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
                 </LinearLayout>
+            </ScrollView>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/border" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            android:background="@color/movie_thumb_background">
+
+            <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="8dp">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_margin="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_margin="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_margin="2dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:src="@mipmap/user01" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center"
+                                android:text="hogehoge"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+            </ScrollView>
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp">
+        </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:background="@color/login_button_background">
 
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_margin="2dp"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:src="@mipmap/user01"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp" />
-
-                        <TextView
-                            android:textColor="@color/thumb_title"
-                            android:text="hogehoge"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="30dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
+            <Button
+                android:id="@+id/join_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="#f74d80"
+                android:gravity="center"
+                android:text="@string/login_title"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:background="@color/login_button_background"
-        android:layout_weight="0.5"
+        android:id="@+id/video_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <Button
-        android:layout_margin="10dp"
-        android:background="#f74d80"
-        android:textColor="#ffffff"
-        android:id="@+id/join_button"
-        android:text="@string/login_title"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <com.google.vr.sdk.widgets.video.VrVideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="@null" />
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
