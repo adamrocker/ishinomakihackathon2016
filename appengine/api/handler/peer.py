@@ -9,8 +9,7 @@ class PeerRegisterHandler(ApiHandler):
         return
 
     def post(self):
-        param = self.get_param_as_json()
-        pid = param.get("peer_id")
+        pid = self.get_param("peer_id")
         pdata = PeerData.create_entity(pid)
         pdata.put()
         id = pdata.key.id()
