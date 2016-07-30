@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BlueSpring</string>
+    <string name="login_title">IN</string>
 </resources>
