@@ -24,8 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.5"
-            android:background="@color/user_thumb_background"
-            android:padding="8dp">
+            android:background="@color/user_thumb_background">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -45,9 +44,12 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="4dp"
+                            android:paddingTop="8dp">
 
                             <com.ishinomakihackathon2016.bluespring.vr.RoundedImageView
                                 android:layout_width="match_parent"
@@ -58,14 +60,34 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="top|center_horizontal"
-                                android:text="hogehoge"
+                                android:text="あだむ"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
-                        <Space
+                        <LinearLayout
+                            android:id="@+id/target_user"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:visibility="invisible"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="8dp"
+                            android:paddingTop="8dp">
+
+                            <com.ishinomakihackathon2016.bluespring.vr.RoundedImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@mipmap/user02" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="top|center_horizontal"
+                                android:text="ふぃっしゅ"
+                                android:textColor="@color/thumb_title" />
+                        </LinearLayout>
 
                         <Space
                             android:layout_width="0dp"
