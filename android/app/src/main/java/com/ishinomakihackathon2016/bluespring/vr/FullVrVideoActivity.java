@@ -188,11 +188,36 @@ public class FullVrVideoActivity extends Activity {
 
     private void togglePause() {
         if (isPaused) {
-            videoWidgetView.playVideo();
+            this.playVideo();
         } else {
-            videoWidgetView.pauseVideo();
+            this.pauseVideo();
         }
+    }
+
+    private void playVideo() {
+        long seek = getPosition();
+        playVideo(seek);
+    }
+
+    private void playVideo(long seektime) {
+        // seektime: position in milliseconds
+        if (!isPaused) return;
+
+        videoWidgetView.seekTo(seektime);
+        videoWidgetView.playVideo();
         isPaused = !isPaused;
+    }
+
+    private void pauseVideo() {
+        if (isPaused) return;
+
+        videoWidgetView.pauseVideo();
+        isPaused = !isPaused;
+    }
+
+    private long getPosition() {
+        // the current position in milliseconds.
+        return videoWidgetView.getCurrentPosition();
     }
 
     /**
