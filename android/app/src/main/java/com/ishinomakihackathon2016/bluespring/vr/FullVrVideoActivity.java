@@ -108,7 +108,7 @@ public class FullVrVideoActivity extends Activity {
     private void setupPeer(Intent intent) {
         String myPeerId = intent.getStringExtra("my_peer_id");
         final String dstPeerid = intent.getStringExtra("dst_peer_id");
-        mSw = new SkyWay(getApplicationContext(), null);
+        mSw = new SkyWay(getApplicationContext(), mHandler, null);
         mSw.createPeer(myPeerId, new SkyWayPeerEventListener() {
             @Override
             public void OnOpen(String peerId) {

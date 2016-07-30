@@ -1,7 +1,9 @@
 package com.ishinomakihackathon2016.bluespring.vr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +25,9 @@ import com.ishinomakihackathon2016.bluespring.util.ApiCallback;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Random;
 
+import io.skyway.Peer.Browser.Canvas;
 import io.skyway.Peer.MediaConnection;
 
 public class MainActivity extends Activity implements
@@ -34,7 +38,7 @@ public class MainActivity extends Activity implements
     private static final int LOAD_VIDEO_STATUS_UNKNOWN = 0;
     private static final int LOAD_VIDEO_STATUS_SUCCESS = 1;
     private static final int LOAD_VIDEO_STATUS_ERROR = 2;
-
+    private Context mContext;
     private Handler mHandler;
 
     private Toolbar mToolbar;
@@ -57,7 +61,13 @@ public class MainActivity extends Activity implements
     private LinearLayout mVideoLayout;
     private VrVideoView videoWidgetView;
     private int loadVideoStatus = LOAD_VIDEO_STATUS_UNKNOWN;
+    private Canvas mCanvas;
     private boolean isPaused = false;
+
+    // ===== Media P2P
+    private SkyWay mMediaP2p;
+    private String mMediaMyPeerId; // 自分のID
+    private AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +75,22 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         mMainLayout = (LinearLayout) findViewById(R.id.main_layout);
         mTargetLayout = (LinearLayout)findViewById(R.id.target_user);
+        mContext = getApplicationContext();
         mHandler = new Handler();
 
-        mP2p = new SkyWay(getApplicationContext(), new SkyWayDataEventListener() {
+        mP2p = new SkyWay(mContext, mHandler, new SkyWayDataEventListener() {
             @Override
             public void OnOpen(Object o) {
-
+                // 相手がアプリを開くとCONNECTイベントが発生し、その後、コチラがわでDataConnectionを作りこのOPENイベントが発火して初めてデータのやり取りが可能になる
+                Log.d(TAG, "mP2p.DataConnection.OPEN!");
+                mP2p.sendCommandDummy("Thank you! I also open my DataConnection. Start our data messaging!");
+                // createMediaP2P();
             }
 
             @Override
             public void OnData(Object object) {
                 String value = (String) object;
+                Log.i(TAG, "DataMessage=" + value);
                 String[] command = value.split(":");
                 String cmd = command[0]; // cmd
                 String exec = command[1]; // play or pause
@@ -113,6 +128,43 @@ public class MainActivity extends Activity implements
                             playVideo(0, false);
                         }
                     }, diff);
+                } else if (exec.equals("media")) {
+                    // MediaConnectionを作る
+                    final String dstPeerId = command[2];
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMediaP2p = new SkyWay(mContext, mHandler, null);
+                            mMediaP2p.createPeer(null, new SkyWayPeerEventListener() {
+                                @Override
+                                public void OnOpen(String peerId) {
+                                    mMediaP2p.createMediaConnection(dstPeerId);
+                                }
+
+                                @Override
+                                public void OnCall(MediaConnection o) {
+                                }
+
+                                @Override
+                                public void OnConnection(Object o) {
+                                }
+
+                                @Override
+                                public void OnClose(Object o) {
+                                }
+
+                                @Override
+                                public void OnDisconnected(Object o) {
+                                }
+
+                                @Override
+                                public void OnError(Object o) {
+                                }
+                            });
+                        }
+                    });
+
+
                 }
             }
 
@@ -140,6 +192,7 @@ public class MainActivity extends Activity implements
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
         videoWidgetView.setEventListener(new ActivityEventListener());
         loadVideoStatus = LOAD_VIDEO_STATUS_UNKNOWN;
+        mCanvas = (Canvas) findViewById(R.id.video_canvas);
 
         Intent intent = getIntent();
         Uri uri = intent.getData();
@@ -155,6 +208,10 @@ public class MainActivity extends Activity implements
         } else {
             createRoom();
         }
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setSpeakerphoneOn(true);
     }
 
     @Override
@@ -227,8 +284,16 @@ public class MainActivity extends Activity implements
                             /*
                                招待した友達が部屋に入ってきた
                              */
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d(TAG, "CONNECTION!");
 
-                            mTargetLayout.setVisibility(View.VISIBLE);
+                                    mTargetLayout.setVisibility(View.VISIBLE);
+
+                                }
+                            });
+
                         }
 
                         @Override
@@ -253,9 +318,48 @@ public class MainActivity extends Activity implements
         });
     }
 
+    private void createMediaP2P() {
+        Log.i(TAG, "createMediaP2P");
+        Random r = new Random();
+        mMediaMyPeerId = "MC_" + String.valueOf(Math.abs(r.nextInt()));
+        mMediaP2p = new SkyWay(mContext, mHandler, null);
+        mMediaP2p.createPeer(mMediaMyPeerId, new SkyWayPeerEventListener() {
+            @Override
+            public void OnOpen(String peerId) {
+                Log.i(TAG, "Open own peer");
+                mP2p.sendCommandCreateMediaPeer(mMediaMyPeerId);
+            }
+
+            @Override
+            public void OnCall(MediaConnection o) {
+
+            }
+
+            @Override
+            public void OnConnection(Object o) {
+
+            }
+
+            @Override
+            public void OnClose(Object o) {
+
+            }
+
+            @Override
+            public void OnDisconnected(Object o) {
+
+            }
+
+            @Override
+            public void OnError(Object o) {
+
+            }
+        });
+    }
+
     private void connectDestPeer() {
         /**
-         * 招待者へのアクセス
+         * 招待者(Sender)へのアクセス
          */
         mP2p.createPeer(null, new SkyWayPeerEventListener() {
             @Override
