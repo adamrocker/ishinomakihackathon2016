@@ -84,7 +84,7 @@ public class MainActivity extends Activity implements
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            playVideo(Long.parseLong(msec));
+                            playVideo(Long.parseLong(msec), false);
                         }
                     });
                 } else if(exec.equals("pause")) {
@@ -92,7 +92,7 @@ public class MainActivity extends Activity implements
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            pauseVideo(msec);
+                            pauseVideo(msec, false);
                         }
                     });
                 } else if (exec.equals("open")) {
@@ -110,7 +110,7 @@ public class MainActivity extends Activity implements
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            playVideo(0);
+                            playVideo(0, false);
                         }
                     }, diff);
                 }
@@ -162,6 +162,7 @@ public class MainActivity extends Activity implements
         //mP2p.sendMessage("sender-peer-id:" + mMyPeerId);
         int id = v.getId();
         if( id == R.id.join_button) {
+            mP2p.createMediaConnection(mDstPeerId);
             int movieId = 0;
             mP2p.sendCommandOpen(movieId);
             openVr();
@@ -253,6 +254,9 @@ public class MainActivity extends Activity implements
     }
 
     private void connectDestPeer() {
+        /**
+         * 招待者へのアクセス
+         */
         mP2p.createPeer(null, new SkyWayPeerEventListener() {
             @Override
             public void OnOpen(String peerId) {
@@ -342,33 +346,28 @@ public class MainActivity extends Activity implements
     }
 
     private void togglePause() {
+        long seek = getPosition();
         if (isPaused) {
-            this.playVideo();
+            playVideo(seek, true);
         } else {
-            this.pauseVideo();
+            pauseVideo(seek, true);
         }
     }
 
-    private void playVideo() {
-        long seek = getPosition();
-        playVideo(seek);
-    }
-
-    private void playVideo(long seektime) {
+    private void playVideo(long seektime, boolean withCmd) {
         // seektime: position in milliseconds
-        mP2p.sendCommandPlay(seektime);
+        if (withCmd) {
+            mP2p.sendCommandPlay(seektime);
+        }
         videoWidgetView.seekTo(seektime);
         videoWidgetView.playVideo();
         isPaused = false;
     }
 
-    private void pauseVideo() {
-        long seek = getPosition();
-        pauseVideo(seek);
-    }
-
-    private void pauseVideo(long seektime) {
-        mP2p.sendCommandPause(seektime);
+    private void pauseVideo(long seektime, boolean withCmd) {
+        if (withCmd) {
+            mP2p.sendCommandPause(seektime);
+        }
         videoWidgetView.seekTo(seektime);
         videoWidgetView.pauseVideo();
         isPaused = true;
@@ -387,7 +386,7 @@ public class MainActivity extends Activity implements
         public void onLoadSuccess() {
             Log.i(TAG, "Sucessfully loaded video " + videoWidgetView.getDuration());
             loadVideoStatus = LOAD_VIDEO_STATUS_SUCCESS;
-            pauseVideo(13000);
+            pauseVideo(13000, false);
         }
 
         /**

@@ -64,7 +64,9 @@ public class SkyWay {
             @Override
             public void onCallback(Object o) {
                 Log.d(TAG, "Peer/CALL");
-                _mMedia = (MediaConnection) o;
+                if (o instanceof MediaConnection) {
+                    _mMedia = (MediaConnection) o;
+                }
                 setMediaCallbacks();
                 receiveCall();
                 if(listener != null) listener.OnCall(_mMedia);
@@ -137,6 +139,7 @@ public class SkyWay {
         media.on(MediaConnection.MediaEventEnum.STREAM, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "MediaStream@MediaConnection: " + object);
 				_mMediaRemote = (MediaStream) object;
                 // import io.skyway.Peer.Browser.Canvas;
 				// Canvas canvas = (Canvas) findViewById(R.id.svPrimary);
@@ -147,6 +150,7 @@ public class SkyWay {
 		media.on(MediaConnection.MediaEventEnum.CLOSE, new OnCallback() {
 			@Override
 			public void onCallback(Object object) {
+                Log.d(TAG, "MediaClose@MediaConnection: " + object);
 				if (_mMediaRemote == null) {
 					return;
 				}
@@ -253,6 +257,8 @@ public class SkyWay {
             throw new IllegalStateException("No peer to start any local stream");
         }
         MediaConstraints constraints = new MediaConstraints();
+        constraints.videoFlag = false;
+        constraints.audioFlag = true;
         _mMediaLocal = this.mPeer.getLocalMediaStream(constraints);
     }
 
@@ -267,7 +273,7 @@ public class SkyWay {
         }
     }
 
-    public void call(String peerId) throws IllegalStateException {
+    public void createMediaConnection(String peerId) throws IllegalStateException {
         synchronized (this) {
             if (!this.hasConnection()) {
                 throw new IllegalStateException("Already had a connection");
