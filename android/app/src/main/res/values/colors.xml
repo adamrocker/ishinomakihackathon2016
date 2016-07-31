@@ -7,7 +7,7 @@
     <color name="thumb_title">#44352f</color>
     <color name="toolbar_title">#0f7d81</color>
     <color name="user_thumb_background">#fefee8</color>
-    <color name="movie_thumb_background">#fef99f</color>
+    <color name="movie_thumb_background">#ffffbf</color>
     <color name="login_button_background">#9edfd8</color>
     <color name="toolbar_background">#9edfd8</color>
 </resources>
