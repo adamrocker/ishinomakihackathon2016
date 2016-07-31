@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -51,6 +53,9 @@ public class MainActivity extends Activity implements
     private long mRoomId = -1;
     private String mRoomUrl;
 
+    // ===== Animation
+    private Animation mVisibleAnimation;
+
     // ===== MAIN Layout
     private LinearLayout mMainLayout;
 
@@ -77,6 +82,8 @@ public class MainActivity extends Activity implements
         mTargetLayout = (LinearLayout)findViewById(R.id.target_user);
         mContext = getApplicationContext();
         mHandler = new Handler();
+
+        mVisibleAnimation = (Animation) AnimationUtils.loadAnimation(this, R.anim.in_animation);
 
         mP2p = new SkyWay(mContext, mHandler, new SkyWayDataEventListener() {
             @Override
@@ -289,6 +296,7 @@ public class MainActivity extends Activity implements
                                 public void run() {
                                     Log.d(TAG, "CONNECTION!");
 
+                                    mTargetLayout.startAnimation(mVisibleAnimation);
                                     mTargetLayout.setVisibility(View.VISIBLE);
 
                                 }
@@ -368,6 +376,7 @@ public class MainActivity extends Activity implements
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        mTargetLayout.startAnimation(mVisibleAnimation);
                         mTargetLayout.setVisibility(View.VISIBLE);
                     }
                 });
