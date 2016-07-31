@@ -192,7 +192,7 @@ public class MainActivity extends Activity implements
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
         videoWidgetView.setEventListener(new ActivityEventListener());
         loadVideoStatus = LOAD_VIDEO_STATUS_UNKNOWN;
-        mCanvas = (Canvas) findViewById(R.id.video_canvas);
+//        mCanvas = (Canvas) findViewById(R.id.video_canvas);
 
         Intent intent = getIntent();
         Uri uri = intent.getData();
