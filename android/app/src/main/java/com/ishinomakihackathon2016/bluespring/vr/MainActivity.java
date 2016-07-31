@@ -11,7 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.vr.sdk.widgets.video.VrVideoEventListener;
@@ -51,6 +54,9 @@ public class MainActivity extends Activity implements
     private long mRoomId = -1;
     private String mRoomUrl;
 
+    // ===== Animation
+    private Animation mVisibleAnimation;
+
     // ===== MAIN Layout
     private LinearLayout mMainLayout;
 
@@ -69,6 +75,10 @@ public class MainActivity extends Activity implements
     private String mMediaMyPeerId; // 自分のID
     private AudioManager audioManager;
 
+    // ===== プレゼン用
+    private ImageView landscapeImage;
+    private boolean isSelected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +87,11 @@ public class MainActivity extends Activity implements
         mTargetLayout = (LinearLayout)findViewById(R.id.target_user);
         mContext = getApplicationContext();
         mHandler = new Handler();
+
+        mVisibleAnimation = (Animation) AnimationUtils.loadAnimation(this, R.anim.in_animation);
+
+        landscapeImage = (ImageView)findViewById(R.id.landscape_image);
+        landscapeImage.setOnClickListener(this);
 
         mP2p = new SkyWay(mContext, mHandler, new SkyWayDataEventListener() {
             @Override
@@ -180,6 +195,7 @@ public class MainActivity extends Activity implements
         });
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
         mToolbar.setTitleTextColor(getColor(R.color.toolbar_title));
         mToolbar.setTitle(getString(R.string.app_name));
         mToolbar.inflateMenu(R.menu.menu_main);
@@ -192,7 +208,7 @@ public class MainActivity extends Activity implements
         videoWidgetView = (VrVideoView) findViewById(R.id.video_view);
         videoWidgetView.setEventListener(new ActivityEventListener());
         loadVideoStatus = LOAD_VIDEO_STATUS_UNKNOWN;
-        mCanvas = (Canvas) findViewById(R.id.video_canvas);
+//        mCanvas = (Canvas) findViewById(R.id.video_canvas);
 
         Intent intent = getIntent();
         Uri uri = intent.getData();
@@ -223,6 +239,14 @@ public class MainActivity extends Activity implements
             int movieId = 0;
             mP2p.sendCommandOpen(movieId);
             openVr();
+        }else if( id == R.id.landscape_image){
+            if (isSelected){
+                landscapeImage.setImageResource(R.mipmap.landscape_off);
+                isSelected = false;
+            }else{
+                landscapeImage.setImageResource(R.mipmap.landscape_on);
+                isSelected = true;
+            }
         }
     }
 
@@ -289,6 +313,7 @@ public class MainActivity extends Activity implements
                                 public void run() {
                                     Log.d(TAG, "CONNECTION!");
 
+                                    mTargetLayout.startAnimation(mVisibleAnimation);
                                     mTargetLayout.setVisibility(View.VISIBLE);
 
                                 }
@@ -368,6 +393,7 @@ public class MainActivity extends Activity implements
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        mTargetLayout.startAnimation(mVisibleAnimation);
                         mTargetLayout.setVisibility(View.VISIBLE);
                     }
                 });

@@ -116,9 +116,7 @@
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="8dp">
+                android:paddingTop="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,6 +124,7 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -134,65 +133,70 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:id="@+id/landscape_image"
+                                android:src="@mipmap/landscape_off"
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"/>
 
                             <TextView
+                                android:text="いつか見た夢"
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb02" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="夏の思い出"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb01" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="綺麗な森"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -201,65 +205,69 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb04" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="美しい崖"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb05" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="青空の下"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb06" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="あの日見た夕日"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
@@ -268,60 +276,61 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb03"/>
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text="精霊が宿る滝"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text=""
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_margin="2dp"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="100dp"
-                                android:src="@mipmap/user01" />
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"/>
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="hogehoge"
+                                android:text=""
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
                     </LinearLayout>
