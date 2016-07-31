@@ -187,6 +187,7 @@ public class MainActivity extends Activity implements
         });
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setNavigationIcon(R.mipmap.ic_launcher);
         mToolbar.setTitleTextColor(getColor(R.color.toolbar_title));
         mToolbar.setTitle(getString(R.string.app_name));
         mToolbar.inflateMenu(R.menu.menu_main);
