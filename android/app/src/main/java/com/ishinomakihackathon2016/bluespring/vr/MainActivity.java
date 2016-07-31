@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.vr.sdk.widgets.video.VrVideoEventListener;
@@ -74,6 +75,10 @@ public class MainActivity extends Activity implements
     private String mMediaMyPeerId; // 自分のID
     private AudioManager audioManager;
 
+    // ===== プレゼン用
+    private ImageView landscapeImage;
+    private boolean isSelected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,9 @@ public class MainActivity extends Activity implements
         mHandler = new Handler();
 
         mVisibleAnimation = (Animation) AnimationUtils.loadAnimation(this, R.anim.in_animation);
+
+        landscapeImage = (ImageView)findViewById(R.id.landscape_image);
+        landscapeImage.setOnClickListener(this);
 
         mP2p = new SkyWay(mContext, mHandler, new SkyWayDataEventListener() {
             @Override
@@ -231,6 +239,14 @@ public class MainActivity extends Activity implements
             int movieId = 0;
             mP2p.sendCommandOpen(movieId);
             openVr();
+        }else if( id == R.id.landscape_image){
+            if (isSelected){
+                landscapeImage.setImageResource(R.mipmap.landscape_off);
+                isSelected = false;
+            }else{
+                landscapeImage.setImageResource(R.mipmap.landscape_on);
+                isSelected = true;
+            }
         }
     }
 

@@ -137,17 +137,18 @@
                             android:orientation="vertical">
 
                             <ImageView
+                                android:id="@+id/landscape_image"
+                                android:src="@mipmap/landscape_off"
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
                                 android:layout_width="120dp"
-                                android:layout_height="120dp"
-                                android:src="@mipmap/thumb01" />
+                                android:layout_height="120dp"/>
 
                             <TextView
+                                android:text="いつか見た夢"
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="綺麗な森"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
@@ -183,13 +184,13 @@
                                 android:scaleType="centerCrop"
                                 android:layout_width="120dp"
                                 android:layout_height="120dp"
-                                android:src="@mipmap/thumb03" />
+                                android:src="@mipmap/thumb01" />
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text="精霊が宿る滝"
+                                android:text="綺麗な森"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
                     </LinearLayout>
@@ -282,13 +283,14 @@
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
                                 android:layout_width="120dp"
-                                android:layout_height="120dp" />
+                                android:layout_height="120dp"
+                                android:src="@mipmap/thumb03"/>
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="30dp"
                                 android:gravity="center"
-                                android:text=""
+                                android:text="精霊が宿る滝"
                                 android:textColor="@color/thumb_title" />
                         </LinearLayout>
 
