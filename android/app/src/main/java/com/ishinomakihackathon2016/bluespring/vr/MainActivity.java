@@ -467,7 +467,7 @@ public class MainActivity extends Activity implements
         VrVideoView.Options options = new VrVideoView.Options();
         options.inputType = VrVideoView.Options.TYPE_STEREO_OVER_UNDER;
         try {
-            videoWidgetView.loadVideoFromAsset("penguins.mp4", options);
+            videoWidgetView.loadVideoFromAsset("landscape.mp4", options);
 
         } catch (IOException e) {
             e.printStackTrace();
